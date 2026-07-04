@@ -3,8 +3,10 @@ const Web3 = window.Web3;
 let cuentaBlockchain = null;
 
 let CONTRATO_ABI = null;
-
 let CONTRATO_DIRECCION = null;
+
+let NFT_ABI = null;
+let NFT_DIRECCION = null; 
 
 
 window.addEventListener(
@@ -13,6 +15,7 @@ window.addEventListener(
         await conectarMetaMask();
         buscarPrestamos();
         await cargarConfiguracionContrato();
+        await cargarConfiguracionNFT();
     }
 );
 
@@ -63,6 +66,16 @@ async function buscarPrestamos() {
                         onclick="validarBlockchain('${prestamo.id}')"
                     >
                         VALIDAR
+                    </button>
+
+                    <button class="btn btn-sm btn-outline-primary"
+                    onclick="mintNFT('${prestamo.id}')">
+                    MINT NFT
+                    </button>
+
+                    <button class="btn btn-sm btn-outline-success"
+                    onclick="verificarNFT('${prestamo.id}')">
+                    VERIFICAR NFT
                     </button>
                 </td>
             `;
@@ -219,6 +232,116 @@ async function validarBlockchain(id) {
 
     } catch (error) {
         console.error('Error al validar en blockchain:', error);
+        Swal.close();
+        Swal.fire('Error', error.message, 'error');
+    }
+}
+
+async function cargarConfiguracionNFT() {
+    try {
+        const response = await axios.get('http://localhost:3000/api/prestamos/nft/config');
+        NFT_ABI = response.data.abi;
+        NFT_DIRECCION = response.data.address;
+        console.log('Configuración del NFT cargada:', NFT_DIRECCION);
+    } catch (error) {
+        console.error('Error al cargar la configuración del NFT:', error);
+        Swal.fire('Error', 'No se pudo cargar la configuración del NFT.', 'error');
+    }
+}
+
+async function mintNFT(id) {
+    if (!cuentaBlockchain) {
+        Swal.fire('Error', 'Primero debes conectar Metamask', 'error');
+        return;
+    }
+    if (!NFT_ABI || !NFT_DIRECCION) {
+        Swal.fire('Error', 'La configuración del contrato NFT no está cargada.', 'error');
+        return;
+    }
+    try {
+        Swal.fire({ title: 'Minteando NFT', didOpen: () => { Swal.showLoading() } });
+        const response = await axios.get('http://localhost:3000/api/prestamos/' + id);
+        const prestamo = response.data;
+
+        // Configuracion de web3 con Metamask
+        const web3 = new Web3(window.ethereum);
+
+        // Crear instancia del contrato NFT
+        const contratoNFT = new web3.eth.Contract(NFT_ABI, NFT_DIRECCION);
+
+        // Generar hash del prestamos (puedes usar cualquier método para generar un hash único)
+        const hash = web3.utils.soliditySha3(
+            { t: 'uint', v: Number(prestamo.id) },
+            { t: 'uint', v: Number(prestamo.cliente_id) },
+            { t: 'uint', v: Number(prestamo.monto) },
+            { t: 'uint', v: Number(prestamo.plazo) },
+            { t: 'uint', v: Number(prestamo.interes) },
+            { t: 'string', v: prestamo.estado }
+        );
+
+        // Enviar transaccion al contrato NFT
+        const tx = await contratoNFT.methods.mintPrestamoNFT(
+            prestamo.id,
+            Number(prestamo.cliente_id),
+            Number(prestamo.monto),
+            Number(prestamo.plazo),
+            Number(prestamo.interes),
+            prestamo.estado.toString(),
+            hash,
+            cuentaBlockchain // La direccion que recibira el NFT
+        ).send({ from: cuentaBlockchain });
+
+        console.log('NFT minteado con exito:', tx.transactionHash);
+
+        Swal.close();
+        Swal.fire('Éxito', 'NFT minteado con hash de transacción: ' + tx.transactionHash, 'success');
+
+
+    } catch (error) {
+        console.error('Error al mintear el NFT:', error);
+        Swal.close();
+        Swal.fire('Error', error.message, 'error');
+    }
+}
+
+async function verificarNFT(id) {
+    try {
+        Swal.fire({ title: 'Verificando NFT', didOpen: () => { Swal.showLoading() } });
+
+        const response = await axios.get(`http://localhost:3000/api/prestamos/nft/verify-complete/${id}/${cuentaBlockchain}`);
+        const result = response.data;
+        Swal.close();
+
+        if (result.hasNFT) {
+            Swal.fire({
+                icon: result.ownership.isOwner ? 'success' : 'warning',
+                title: result.ownership.isOwner ? 'NFT encontrado (Te pertenece)' : 'NFT encontrado (No te pertenece)',
+                html: `
+                    <strong>Token ID:</strong> ${result.tokenId}<br>
+                    <strong>Prestamo ID:</strong> ${result.metadata.prestamoId}<br> 
+                    <strong>Cliente ID:</strong> ${result.metadata.clienteId}<br> 
+                    <strong>Monto:</strong> ${result.metadata.monto}<br>
+                    <strong>Plazo:</strong> ${result.metadata.plazo}<br> 
+                    <strong>Interés:</strong> ${result.metadata.interes}<br>
+                    <strong>Estado:</strong> ${result.metadata.estado}<br>  
+                    <strong>Hash:</strong> ${result.metadata.hash}<br>
+                    <strong>Fecha:</strong> ${new Date(result.metadata.timestamp * 1000).toLocaleString()}<br><br>
+
+                    <strong>Propietario:</strong> ${result.ownership.owner}<br>
+                    <strong>Tu Cuenta:</strong> ${cuentaBlockchain}<br>
+                    <strong>Te pertenece:</strong> ${result.ownership.isOwner ? 'Sí' : 'No'}<br>
+
+
+                `
+            } );
+        } else {
+            Swal.fire('Información', 'No se encontró un NFT para esta factura.', 'info');
+        }
+
+
+
+    } catch (error) {
+        console.error('Error al verificar el NFT:', error);
         Swal.close();
         Swal.fire('Error', error.message, 'error');
     }

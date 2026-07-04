@@ -13,6 +13,8 @@ app.use(cors({
 }));
 
 app.use("/prestamos", prestamoRoutes);
+app.use("/api/prestamos", prestamoRoutes);
+
 
 const PORT = 3000;
 

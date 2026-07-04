@@ -1,5 +1,6 @@
 import PrestamoService from '../services/prestamoService.js';
-import {CONTRATO_ABI, CONTRATO_DIRECCION} from '../config/blockchain-config.js';
+import PrestamoNFTService from '../services/prestamoNFTService.js';
+import {CONTRATO_ABI, CONTRATO_DIRECCION, NFT_ABI, NFT_DIRECCION} from '../config/blockchain-config.js';
 
 const PrestamoController = {
 
@@ -103,8 +104,48 @@ const PrestamoController = {
             });
 
         }
-    }
+    },
 
+    getNFTConfig: async (req,res) => {
+
+        res.json({
+
+            abi: NFT_ABI,
+            address: NFT_DIRECCION
+
+        });
+
+    },
+
+    verifyNFTComplete: async (req,res) => {
+
+        try{
+
+            const result =
+            await PrestamoNFTService.verifyNFTComplete(
+
+                req.params.prestamoId,
+                req.params.address
+
+            );
+
+            res.json(result);
+
+        }catch(error){
+
+            console.error(
+                "Error al verificar NFT:",
+                error
+            );
+
+            res.status(500).json({
+
+                error:error.message
+
+            });
+
+        }
+    }
 };
 
 export default PrestamoController;
