@@ -1,0 +1,124 @@
+/* Fondo general */
+body {
+    background: #f5f7f6;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Card estilo limpio */
+.card {
+    border: none;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Header principal */
+.card-header {
+    background: linear-gradient(135deg, #198754, #2ea67d);
+    color: white;
+    padding: 20px;
+}
+
+.card-header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+/* Botones */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* TABLA */
+table {
+    width: 100%;
+    min-width: 900px; /* IMPORTANTE: evita que se aplaste en móvil */
+    border-radius: 12px;
+}
+
+/* HEADER DE TABLA */
+thead {
+    background: #1f2d2a;
+    color: #e9f5ee;
+}
+
+thead th {
+    padding: 14px !important;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    border-bottom: 2px solid #2ea67d;
+}
+
+/* FILAS */
+tbody td {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 14px;
+    padding: 12px !important;
+    color: #2d3436;
+}
+
+/* Alternancia suave */
+tbody tr:nth-child(even) {
+    background: #f3f8f6;
+}
+
+/* Hover elegante */
+tbody tr {
+    transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+    background: #e6f4ef;
+    transform: scale(1.01);
+}
+
+/* Badge activo */
+.badge {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+/* CONTENEDOR TABLA (FIX SCROLL) */
+.table-responsive {
+    border-radius: 12px;
+    overflow-x: auto;   /* IMPORTANTE */
+    overflow-y: hidden;
+    border: 1px solid #e3ebe7;
+}
+
+/* Scroll bonito */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #198754;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #146c43;
+}
+
+/* Card body */
+.card-body {
+    padding: 22px;
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- sweetalert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- web3js -->
+    <script src=" https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+
+    <link rel="stylesheet" href="clientes.css">
+</head>
+
+<body class="container mt-2">
+    <div class="card">
+        <div class="card-header">
+            <div class="text-start">
+                <b>
+                <small class="text-muted">Cuenta conectada</small>
+                <code id="cuentaConectada" class="text-danger">Conectando . . .</code>
+            </b></div>
+            <h1 class="text-center">Clientes de Sistema de Préstamos</h1>
+        </div>
+        <div class="card-body">
+
+            <!-- botones -->
+            <div class="mb-3">
+                <button class="btn btn-info btn-sm" onclick="buscarClientes()">BUSCAR</button>
+                <button class="btn btn-success btn-sm" onclick="AgregarCliente()">NUEVO</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>DNI</th>
+                            <th>NOMBRE</th>
+                            <th>TELÉFONO</th>
+                            <th>CORREO</th>
+                            <th>ACTIVO</th>
+                            <th>ESTADO</th>
+                            <th>REGISTRO</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="clientesBody">
+                        <!-- filas dinámicas -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script src="clientes.js"></script>
