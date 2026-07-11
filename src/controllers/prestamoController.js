@@ -1,6 +1,7 @@
 import PrestamoService from '../services/prestamoService.js';
 import PrestamoNFTService from '../services/prestamoNFTService.js';
-import {CONTRATO_ABI, CONTRATO_DIRECCION, NFT_ABI, NFT_DIRECCION} from '../config/blockchain-config.js';
+import {CONTRATO_ABI, CONTRATO_DIRECCION, NFT_ABI, NFT_DIRECCION} from '../config/prestamo-blockchain-config.js';
+import PrestamoPdfService from '../services/prestamoPdfService.js';
 
 const PrestamoController = {
 
@@ -144,6 +145,17 @@ const PrestamoController = {
 
             });
 
+        }
+    },
+
+    generarPDF: async (req, res) => {
+        console.log(`PrestamoController - Generando PDF para préstamo con ID: ${req.params.id}`);
+        try {
+            const result = await PrestamoService.generarPDF(req.params.id);
+            res.json(result);
+        } catch (error) {
+            console.error('Error al generar PDF:', error);
+            res.status(500).json({error: error.message});
         }
     }
 };

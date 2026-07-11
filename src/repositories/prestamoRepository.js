@@ -1,4 +1,4 @@
-import connection from '../config/database.js';
+import connection from '../config/prestamo-database.js';
 
 const PrestamoRepository = {
 
@@ -104,6 +104,14 @@ const PrestamoRepository = {
             [txHash, id]
         );
 
+    },
+
+    updateIpfsHash: async (id, ipfsHash) => {
+        console.log('prestamoRepository - Actualizando préstamo ID: ' + id + ' con IPFS hash: ' + ipfsHash);
+        await connection.promise().query(
+            'UPDATE prestamos SET ipfs_hash = ? WHERE id = ?',
+            [ipfsHash, id]
+        );
     }
 
 };

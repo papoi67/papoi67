@@ -77,6 +77,11 @@ async function buscarPrestamos() {
                     onclick="verificarNFT('${prestamo.id}')">
                     VERIFICAR NFT
                     </button>
+
+                    <button class="btn btn-sm btn-outline-dark" 
+                    onclick="generarPDF('${prestamo.id}')">
+                    GENERAR PDF
+                    </button>
                 </td>
             `;
 
@@ -239,7 +244,7 @@ async function validarBlockchain(id) {
 
 async function cargarConfiguracionNFT() {
     try {
-        const response = await axios.get('http://localhost:3000/api/prestamos/nft/config');
+        const response = await axios.get('http://localhost:3000/prestamos/nft/config');
         NFT_ABI = response.data.abi;
         NFT_DIRECCION = response.data.address;
         console.log('Configuración del NFT cargada:', NFT_DIRECCION);
@@ -260,7 +265,7 @@ async function mintNFT(id) {
     }
     try {
         Swal.fire({ title: 'Minteando NFT', didOpen: () => { Swal.showLoading() } });
-        const response = await axios.get('http://localhost:3000/api/prestamos/' + id);
+        const response = await axios.get('http://localhost:3000/prestamos/' + id);
         const prestamo = response.data;
 
         // Configuracion de web3 con Metamask
@@ -308,7 +313,7 @@ async function verificarNFT(id) {
     try {
         Swal.fire({ title: 'Verificando NFT', didOpen: () => { Swal.showLoading() } });
 
-        const response = await axios.get(`http://localhost:3000/api/prestamos/nft/verify-complete/${id}/${cuentaBlockchain}`);
+        const response = await axios.get(`http://localhost:3000/prestamos/nft/verify-complete/${id}/${cuentaBlockchain}`);
         const result = response.data;
         Swal.close();
 
@@ -335,13 +340,46 @@ async function verificarNFT(id) {
                 `
             } );
         } else {
-            Swal.fire('Información', 'No se encontró un NFT para esta factura.', 'info');
+            Swal.fire('Información', 'No se encontró un NFT para este préstamo.', 'info');
         }
 
 
 
     } catch (error) {
         console.error('Error al verificar el NFT:', error);
+        Swal.close();
+        Swal.fire('Error', error.message, 'error');
+    }
+}
+
+async function generarPDF(id) {
+
+    try {
+        Swal.fire({ title: 'Generando PDF y subiendo a IPFS', didOpen: () => { Swal.showLoading() } });
+
+        const response = await axios.get(`http://localhost:3000/prestamos/${id}/pdf`);
+        const result = response.data;
+        console.log('Respuesta del backend:', result);
+        Swal.close();
+
+        if (result.ipfsHash) {
+            Swal.fire({
+                icon: 'success',
+                    title: 'PDF generado exitosamente',
+                    html: 
+                      'IPFS Hash: ' + result.ipfsHash + '<br>' +
+                      'IPFS URL: <a href="' + result.ipfsUrl + '" target="_blank">' + result.ipfsUrl + '</a><br><br>' +
+                      '<button class="btn btn-primary" onclick="window.location.href=\'' + result.ipfsUrl + '\'">Ver PDF en IPFS</button>'
+            });
+        } else {
+            alert(
+                "PDF generado correctamente\n\n" +
+                "IPFS Hash:\n" + result.ipfsHash + "\n\n" +
+                "URL:\n" + result.ipfsUrl
+            );
+        }
+    } catch (error) {
+        console.error('Error al generar PDF:', error);
         Swal.close();
         Swal.fire('Error', error.message, 'error');
     }

@@ -1,6 +1,8 @@
 import PrestamoRepository from '../repositories/prestamoRepository.js';
 import Web3 from 'web3';
-import {CONTRATO_ABI, CONTRATO_DIRECCION, GANACHE_URL} from '../config/blockchain-config.js';
+import {CONTRATO_ABI, CONTRATO_DIRECCION, GANACHE_URL} from '../config/prestamo-blockchain-config.js';
+import PrestamoPdfService from '../services/prestamoPdfService.js'
+
 
 const web3 = new Web3(GANACHE_URL);
 const contrato = new web3.eth.Contract(CONTRATO_ABI, CONTRATO_DIRECCION);
@@ -140,7 +142,23 @@ const PrestamoService = {
 
     };
 
-}
+},
+
+    generarPDF: async (id) => {
+
+        console.log(
+            'PrestamoService: Generando PDF del préstamo ID: ' + id
+        );
+
+        const prestamo = await PrestamoRepository.findById(id);
+
+        if (!prestamo) {
+            throw new Error('Préstamo no encontrado');
+        }
+
+        return await PrestamoPdfService.generarPrestamoPDF(prestamo);
+
+    }
 
 };
 

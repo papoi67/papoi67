@@ -102,7 +102,7 @@ export const CONTRATO_ABI = [
 	}
 ];
 
-export const CONTRATO_DIRECCION = "0x5849bfeA37433Da139d41591eC1Bf2Ff7272e1BA";// Direccion del contrato desplegado
+export const CONTRATO_DIRECCION = "0x38d5561D020eE38bBd30F761e97bF33123246A13";// Direccion del contrato desplegado
 
 // CONFIGURACION DEL CONTRATO NFT
 export const NFT_ABI = [
@@ -754,6 +754,6 @@ export const NFT_ABI = [
 	}
 ];
 
-export const NFT_DIRECCION = "0xddF3261c2EF3ac67936edadDD652f4A7Ff7a38B3";
+export const NFT_DIRECCION = "0xED61a92c81305911B13959C0cB16108d35AB14D1";
 
 export const GANACHE_URL = "http://localhost:7545";

@@ -15,5 +15,6 @@ router.get("/:id",PrestamoController.getById);
 router.put("/:id",PrestamoController.update);
 router.delete("/:id",PrestamoController.delete);
 router.put("/:id/tx-hash",PrestamoController.updateTxHash);
+router.get('/:id/pdf', PrestamoController.generarPDF);
 
 export default router;

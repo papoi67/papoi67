@@ -7,4 +7,5 @@ CREATE TABLE IF NOT EXISTS prestamos (
     estado VARCHAR(50) DEFAULT 'PENDIENTE', -- 'Estados: PENDIENTE, PAGADO'
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     tx_hash_block VARCHAR(255) -- Hash de la transacción en la blockchain
+    ipfs_hash     VARCHAR(255)  -- Hash del archivo en IPFS
 );

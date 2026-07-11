@@ -1,7 +1,7 @@
 import Web3 from "web3";
 
 import {NFT_ABI, NFT_DIRECCION, GANACHE_URL}
-from "../config/blockchain-config.js";
+from "../config/prestamo-blockchain-config.js";
 
 const web3 = new Web3(GANACHE_URL);
 const contratoNFT = new web3.eth.Contract(NFT_ABI, NFT_DIRECCION);
